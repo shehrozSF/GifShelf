@@ -1,0 +1,11 @@
+__pycache__/
+
+.venv/
+venv.bat
+
+build/
+dist/
+*.spec
+
+*.sqlite3
+
