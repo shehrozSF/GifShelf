@@ -18,9 +18,11 @@ Releases are currently not code-signed, so Windows may warn you:
 - **SmartScreen** ("Windows protected your PC"): click *More info*, then *Run anyway*.
 - **Smart App Control** blocks unsigned apps outright, with no option to run them. On those PCs, wait for a signed release or [run from source](#building-from-source).
 
+Code signing is provided by SignPath.io with a certificate by SignPath Foundation (pending approval); see the [code signing policy](#code-signing-policy).
+
 ## Where your data is stored
 
-| | |
+| What | Where |
 |---|---|
 | Library (database + thumbnails) | `%LOCALAPPDATA%\GifShelf` by default, or the folder you chose under Settings > Database |
 | Settings (theme, library location) | `%LOCALAPPDATA%\GifShelf\settings.ini` |
