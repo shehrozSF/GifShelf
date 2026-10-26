@@ -1,3 +1,4 @@
+import ctypes
 import sys
 from pathlib import Path
 
@@ -21,19 +22,16 @@ def resource_path(relative: str) -> Path:
 
 
 def main() -> None:
-    if sys.platform == "win32":
-        # Own taskbar group + icon, instead of being grouped under python.exe.
-        # Kept version-free so taskbar pins survive updates.
-        import ctypes
+    # Own taskbar group + icon, instead of being grouped under python.exe.
+    # Kept version-free so taskbar pins survive updates.
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(APP_ID)
 
-        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(APP_ID)
-
-        # Released automatically when the process exits. The Global\ copy covers
-        # an uninstall started from another user session.
-        kernel32 = ctypes.windll.kernel32
-        kernel32.CreateMutexW.restype = ctypes.c_void_p
-        for name in (APP_MUTEX, "Global\\" + APP_MUTEX):
-            kernel32.CreateMutexW(None, False, name)
+    # Released automatically when the process exits. The Global\ copy covers
+    # an uninstall started from another user session.
+    kernel32 = ctypes.windll.kernel32
+    kernel32.CreateMutexW.restype = ctypes.c_void_p
+    for name in (APP_MUTEX, "Global\\" + APP_MUTEX):
+        kernel32.CreateMutexW(None, False, name)
 
     init_db()
     app = QApplication(sys.argv)

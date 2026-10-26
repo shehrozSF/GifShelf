@@ -1,4 +1,4 @@
-import sys
+import winreg
 
 LIGHT = {
     "bg": "#f5f5f5",
@@ -28,11 +28,7 @@ DARK = {
 
 
 def is_system_dark() -> bool:
-    if sys.platform != "win32":
-        return False
     try:
-        import winreg
-
         with winreg.OpenKey(
             winreg.HKEY_CURRENT_USER,
             r"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize",

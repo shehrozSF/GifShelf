@@ -20,8 +20,8 @@ def _standard_dir(location: QStandardPaths.StandardLocation) -> Path:
 
 
 def default_app_dir() -> Path:
-    """Per-user data folder: %LOCALAPPDATA%\\GifShelf, ~/Library/Application Support/GifShelf,
-    or ~/.local/share/GifShelf. Local (not roaming) since thumbnails can get large."""
+    """Per-user data folder, %LOCALAPPDATA%\\GifShelf. Local (not roaming) since
+    thumbnails can get large."""
     return _standard_dir(QStandardPaths.StandardLocation.AppLocalDataLocation)
 
 
