@@ -41,6 +41,10 @@ SolidCompression=yes
 WizardStyle=modern
 ; Close a running copy (via Restart Manager) before replacing/removing files.
 CloseApplications=yes
+; The app holds this mutex while running (main.py, APP_MUTEX). Setup and the
+; uninstaller both check it and ask the user to close GifShelf first; without
+; it, uninstalling while the app runs leaves its locked files behind.
+AppMutex=GifShelf-80CB7E02,Global\GifShelf-80CB7E02
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked

@@ -9,6 +9,10 @@ from app.db import init_db
 from app.main_window import MainWindow
 from app.storage import APP_ID
 
+# Must match AppMutex in installer/GifShelf.iss. While it exists, the installer
+# and uninstaller ask the user to close GifShelf instead of running over it.
+APP_MUTEX = "GifShelf-80CB7E02"
+
 
 def resource_path(relative: str) -> Path:
     """Bundled file path, both from source and inside a PyInstaller build."""
@@ -23,6 +27,13 @@ def main() -> None:
         import ctypes
 
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(APP_ID)
+
+        # Released automatically when the process exits. The Global\ copy covers
+        # an uninstall started from another user session.
+        kernel32 = ctypes.windll.kernel32
+        kernel32.CreateMutexW.restype = ctypes.c_void_p
+        for name in (APP_MUTEX, "Global\\" + APP_MUTEX):
+            kernel32.CreateMutexW(None, False, name)
 
     init_db()
     app = QApplication(sys.argv)
