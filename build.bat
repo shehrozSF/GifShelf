@@ -1,10 +1,10 @@
 @echo off
 rem Builds dist\GifLibrary\ (the app) and dist\GifLibrary-<version>-setup.exe (the installer).
-rem   build.bat              both
-rem   build.bat app          only the app (CI signs it before building the installer)
-rem   build.bat installer    only the installer, from whatever is in dist\GifLibrary\
-rem Needs: .venv (run venv.bat once) and, for the installer, Inno Setup 6
-rem   winget install JRSoftware.InnoSetup
+rem build.bat              both
+rem build.bat app          only the app (CI signs it before building the installer)
+rem build.bat installer    only the installer, from whatever is in dist\GifLibrary\
+rem Needs: .venv and, for the installer, Inno Setup 6
+rem winget install JRSoftware.InnoSetup
 setlocal
 cd /d "%~dp0"
 
