@@ -1,0 +1,111 @@
+name: Release
+
+# Push a tag matching app/__init__.py's version (e.g. v1.0.0) to build a draft release.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write  # create the draft release
+
+jobs:
+  release:
+    runs-on: windows-latest
+    env:
+      # Signing turns on once these are set (Settings > Secrets and variables > Actions):
+      #   variables: SIGNPATH_ORGANIZATION_ID, SIGNPATH_PROJECT_SLUG, SIGNPATH_POLICY_SLUG
+      #   secret:    SIGNPATH_API_TOKEN
+      # The SignPath project needs two artifact configurations: "app" and "installer".
+      SIGNING: ${{ vars.SIGNPATH_ORGANIZATION_ID != '' }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      - name: Create venv
+        run: python -m venv .venv
+
+      - name: Check tag matches app version
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          v=$(.venv/Scripts/python -c "import app; print(app.__version__)")
+          if [ "v$v" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME doesn't match app/__init__.py version $v"
+            exit 1
+          fi
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y --no-progress
+
+      - name: Build app
+        shell: cmd
+        run: build.bat app
+
+      # --- sign the app (skipped until SignPath is configured) ---
+      - name: Upload unsigned app
+        if: env.SIGNING == 'true'
+        id: upload-app
+        uses: actions/upload-artifact@v7
+        with:
+          name: app-unsigned
+          path: dist/GifLibrary/
+
+      - name: Sign app
+        if: env.SIGNING == 'true'
+        uses: signpath/github-action-submit-signing-request@v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_POLICY_SLUG }}
+          artifact-configuration-slug: app
+          github-artifact-id: ${{ steps.upload-app.outputs.artifact-id }}
+          wait-for-completion: true  # waits for your manual approval in SignPath
+          output-artifact-directory: dist/GifLibrary-signed
+
+      - name: Use signed app
+        if: env.SIGNING == 'true'
+        shell: bash
+        run: rm -rf dist/GifLibrary && mv dist/GifLibrary-signed dist/GifLibrary
+
+      # --- installer, built from the (signed) app ---
+      - name: Build installer
+        shell: cmd
+        run: build.bat installer
+
+      - name: Upload unsigned installer
+        if: env.SIGNING == 'true'
+        id: upload-installer
+        uses: actions/upload-artifact@v7
+        with:
+          name: installer-unsigned
+          path: dist/GifLibrary-*-setup.exe
+
+      - name: Sign installer
+        if: env.SIGNING == 'true'
+        uses: signpath/github-action-submit-signing-request@v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_POLICY_SLUG }}
+          artifact-configuration-slug: installer
+          github-artifact-id: ${{ steps.upload-installer.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: dist/signed
+
+      - name: Use signed installer
+        if: env.SIGNING == 'true'
+        shell: bash
+        run: mv -f dist/signed/*.exe dist/
+
+      - name: Create draft release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true  # review, then publish it on GitHub
+          files: dist/GifLibrary-*-setup.exe

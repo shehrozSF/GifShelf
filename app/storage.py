@@ -73,12 +73,6 @@ def remove_thumb(name: str | Path | None) -> None:
         pass
 
 
-def remove_stale_previews() -> None:
-    """Older versions wrote preview GIFs to disk and leaked them."""
-    for p in thumb_dir().glob("_preview_*.gif"):
-        remove_thumb(p.name)
-
-
 def has_library(directory: Path) -> bool:
     return (directory / DB_NAME).exists()
 
@@ -182,5 +176,7 @@ def use_library(directory: Path | None) -> None:
     if directory is None or directory.resolve() == default_app_dir().resolve():
         s.remove(_SETTINGS_KEY)
     else:
-        s.setValue(_SETTINGS_KEY, str(directory.resolve()))
+        # Forward slashes: QSettings escapes backslashes in ini files, and the
+        # uninstaller reads this value back as plain text.
+        s.setValue(_SETTINGS_KEY, directory.resolve().as_posix())
     s.sync()

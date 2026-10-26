@@ -2,7 +2,6 @@ import sqlite3
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from pathlib import PureWindowsPath
 from typing import Iterable
 
 from app.storage import db_path, ensure_dirs
@@ -57,20 +56,7 @@ def connect():
 def init_db() -> None:
     with connect() as conn:
         conn.executescript(SCHEMA)
-        _migrate_thumb_paths(conn)
         _prune_unused_tags(conn)
-
-
-def _migrate_thumb_paths(conn: sqlite3.Connection) -> None:
-    # Older versions stored absolute paths, which break when the library moves.
-    rows = conn.execute(
-        "SELECT id, thumb_path FROM entries WHERE thumb_path LIKE '%/%' OR thumb_path LIKE '%\\%'"
-    ).fetchall()
-    for row in rows:
-        conn.execute(
-            "UPDATE entries SET thumb_path = ? WHERE id = ?",
-            (PureWindowsPath(row["thumb_path"]).name, row["id"]),
-        )
 
 
 def _prune_unused_tags(conn: sqlite3.Connection) -> None:
