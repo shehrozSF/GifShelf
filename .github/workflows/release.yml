@@ -109,3 +109,4 @@ jobs:
         with:
           draft: true  # review, then publish it on GitHub
           files: dist/GifShelf-*-setup.exe
+          fail_on_unmatched_files: true  # never create a release without the installer

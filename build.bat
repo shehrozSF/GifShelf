@@ -51,19 +51,24 @@ if not exist "dist\GifShelf\GifShelf.exe" (
     exit /b 1
 )
 
+rem Any installed Inno Setup version, then anything on PATH.
 set "ISCC="
-for %%p in (
-    "%ProgramFiles(x86)%\Inno Setup 6\ISCC.exe"
-    "%ProgramFiles%\Inno Setup 6\ISCC.exe"
-    "%LOCALAPPDATA%\Programs\Inno Setup 6\ISCC.exe"
-) do if exist %%p set "ISCC=%%~p"
+for /d %%d in (
+    "%ProgramFiles(x86)%\Inno Setup*"
+    "%ProgramFiles%\Inno Setup*"
+    "%LOCALAPPDATA%\Programs\Inno Setup*"
+) do if exist "%%~d\ISCC.exe" set "ISCC=%%~d\ISCC.exe"
+if not defined ISCC for /f "delims=" %%p in ('where ISCC.exe 2^>nul') do set "ISCC=%%p"
 
 if not defined ISCC (
     echo.
-    echo App built in dist\GifShelf\, but Inno Setup 6 wasn't found, so no installer.
+    echo App built in dist\GifShelf\, but Inno Setup wasn't found, so no installer.
     echo Install it with:  winget install JRSoftware.InnoSetup
+    rem On GitHub Actions a missing installer is a failure, not a skip.
+    if defined CI exit /b 1
     exit /b 0
 )
+echo Using %ISCC%
 
 "%ISCC%" /Q "/DAppVersion=%VERSION%" "/DAppCopyright=%COPYRIGHT%" installer\GifShelf.iss || exit /b 1
 echo.
