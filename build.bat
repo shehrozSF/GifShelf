@@ -1,8 +1,8 @@
 @echo off
-rem Builds dist\GifLibrary\ (the app) and dist\GifLibrary-<version>-setup.exe (the installer).
+rem Builds dist\GifShelf\ (the app) and dist\GifShelf-<version>-setup.exe (the installer).
 rem build.bat              both
 rem build.bat app          only the app (CI signs it before building the installer)
-rem build.bat installer    only the installer, from whatever is in dist\GifLibrary\
+rem build.bat installer    only the installer, from whatever is in dist\GifShelf\
 rem Needs: .venv and, for the installer, Inno Setup 6
 rem winget install JRSoftware.InnoSetup
 setlocal
@@ -26,10 +26,10 @@ for /f "delims=" %%v in ('%PY% -c "import app; print(app.__copyright__)"') do se
 
 if /i "%STAGE%"=="installer" goto installer
 
-echo Building Gif Library %VERSION%...
+echo Building GifShelf %VERSION%...
 "%PY%" installer\version_info.py >nul || exit /b 1
 "%PY%" -m PyInstaller --noconfirm --clean --windowed ^
-    --name GifLibrary ^
+    --name GifShelf ^
     --icon assets\icon.ico ^
     --version-file build\version_info.txt ^
     --add-data "assets\icon.ico;assets" ^
@@ -37,17 +37,17 @@ echo Building Gif Library %VERSION%...
 
 rem Qt files a widgets-only, English-only app never loads (~27 MB):
 rem software OpenGL fallback and Qt's UI translations.
-del /q "dist\GifLibrary\_internal\PySide6\opengl32sw.dll" 2>nul
-rmdir /s /q "dist\GifLibrary\_internal\PySide6\translations" 2>nul
+del /q "dist\GifShelf\_internal\PySide6\opengl32sw.dll" 2>nul
+rmdir /s /q "dist\GifShelf\_internal\PySide6\translations" 2>nul
 
 if /i "%STAGE%"=="app" (
-    echo Done: dist\GifLibrary\
+    echo Done: dist\GifShelf\
     exit /b 0
 )
 
 :installer
-if not exist "dist\GifLibrary\GifLibrary.exe" (
-    echo dist\GifLibrary\GifLibrary.exe not found. Build the app first. 1>&2
+if not exist "dist\GifShelf\GifShelf.exe" (
+    echo dist\GifShelf\GifShelf.exe not found. Build the app first. 1>&2
     exit /b 1
 )
 
@@ -60,11 +60,11 @@ for %%p in (
 
 if not defined ISCC (
     echo.
-    echo App built in dist\GifLibrary\, but Inno Setup 6 wasn't found, so no installer.
+    echo App built in dist\GifShelf\, but Inno Setup 6 wasn't found, so no installer.
     echo Install it with:  winget install JRSoftware.InnoSetup
     exit /b 0
 )
 
-"%ISCC%" /Q "/DAppVersion=%VERSION%" "/DAppCopyright=%COPYRIGHT%" installer\GifLibrary.iss || exit /b 1
+"%ISCC%" /Q "/DAppVersion=%VERSION%" "/DAppCopyright=%COPYRIGHT%" installer\GifShelf.iss || exit /b 1
 echo.
-echo Done: dist\GifLibrary-%VERSION%-setup.exe
+echo Done: dist\GifShelf-%VERSION%-setup.exe

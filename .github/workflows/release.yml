@@ -52,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: app-unsigned
-          path: dist/GifLibrary/
+          path: dist/GifShelf/
 
       - name: Sign app
         if: env.SIGNING == 'true'
@@ -65,12 +65,12 @@ jobs:
           artifact-configuration-slug: app
           github-artifact-id: ${{ steps.upload-app.outputs.artifact-id }}
           wait-for-completion: true  # waits for your manual approval in SignPath
-          output-artifact-directory: dist/GifLibrary-signed
+          output-artifact-directory: dist/GifShelf-signed
 
       - name: Use signed app
         if: env.SIGNING == 'true'
         shell: bash
-        run: rm -rf dist/GifLibrary && mv dist/GifLibrary-signed dist/GifLibrary
+        run: rm -rf dist/GifShelf && mv dist/GifShelf-signed dist/GifShelf
 
       # --- installer, built from the (signed) app ---
       - name: Build installer
@@ -83,7 +83,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: installer-unsigned
-          path: dist/GifLibrary-*-setup.exe
+          path: dist/GifShelf-*-setup.exe
 
       - name: Sign installer
         if: env.SIGNING == 'true'
@@ -108,4 +108,4 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           draft: true  # review, then publish it on GitHub
-          files: dist/GifLibrary-*-setup.exe
+          files: dist/GifShelf-*-setup.exe

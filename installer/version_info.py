@@ -1,6 +1,6 @@
 """Writes build/version_info.txt for PyInstaller's --version-file, from app/__init__.py.
 
-That puts product name, version and copyright into GifLibrary.exe's file
+That puts product name, version and copyright into GifShelf.exe's file
 properties (required for signed releases).
 """
 import re

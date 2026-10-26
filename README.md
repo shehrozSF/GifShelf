@@ -1,4 +1,4 @@
-# Gif Library
+# GifShelf
 
 A small Windows desktop app for keeping your favourite GIF links in one place.
 Save a GIF by URL (or local file), tag it, and copy its link back out with one click when you want to paste it into a chat.
@@ -11,7 +11,7 @@ Save a GIF by URL (or local file), tag it, and copy its link back out with one c
 
 ## Download
 
-Get the installer from the [latest release](../../releases/latest) and run `GifLibrary-<version>-setup.exe`. It installs for your user only, so it doesn't need administrator rights.
+Get the installer from the [latest release](../../releases/latest) and run `GifShelf-<version>-setup.exe`. It installs for your user only, so it doesn't need administrator rights.
 
 Releases are currently not code-signed, so Windows may warn you:
 
@@ -22,12 +22,12 @@ Releases are currently not code-signed, so Windows may warn you:
 
 | | |
 |---|---|
-| Library (database + thumbnails) | `%LOCALAPPDATA%\GifLibrary` by default, or the folder you chose under Settings > Database |
-| Settings (theme, library location) | `%LOCALAPPDATA%\GifLibrary\settings.ini` |
+| Library (database + thumbnails) | `%LOCALAPPDATA%\GifShelf` by default, or the folder you chose under Settings > Database |
+| Settings (theme, library location) | `%LOCALAPPDATA%\GifShelf\settings.ini` |
 
 ## Uninstalling
 
-Uninstall from *Settings > Apps > Installed apps > Gif Library*. The
+Uninstall from *Settings > Apps > Installed apps > GifShelf*. The
 uninstaller asks separately whether to delete your library and your settings;
 both default to *No*, so a reinstall picks up where you left off.
 
@@ -38,7 +38,7 @@ Requires Python 3.14 on Windows.
 ```bat
 pip install -r requirements.txt
 python main.py :: run the app
-build.bat      :: build dist\GifLibrary\ and the installer
+build.bat      :: build dist\GifShelf\ and the installer
 ```
 
 The installer step needs [Inno Setup 6](https://jrsoftware.org/isinfo.php)(`winget install JRSoftware.InnoSetup`).

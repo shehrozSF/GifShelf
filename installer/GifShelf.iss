@@ -6,8 +6,8 @@
 #ifndef AppCopyright
   #define AppCopyright ""
 #endif
-#define AppName "Gif Library"
-#define AppExe "GifLibrary.exe"
+#define AppName "GifShelf"
+#define AppExe "GifShelf.exe"
 
 [Setup]
 ; Never change AppId: it's how Windows recognises upgrades and the uninstall entry.
@@ -23,7 +23,7 @@ VersionInfoDescription={#AppName} Setup
 VersionInfoProductTextVersion={#AppVersion}
 VersionInfoTextVersion={#AppVersion}
 VersionInfoCopyright={#AppCopyright}
-DefaultDirName={autopf}\GifLibrary
+DefaultDirName={autopf}\GifShelf
 DefaultGroupName={#AppName}
 DisableProgramGroupPage=yes
 ; Per-user install by default (no admin prompt); the dialog lets users pick all-users.
@@ -32,7 +32,7 @@ PrivilegesRequiredOverridesAllowed=dialog
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 OutputDir=..\dist
-OutputBaseFilename=GifLibrary-{#AppVersion}-setup
+OutputBaseFilename=GifShelf-{#AppVersion}-setup
 SetupIconFile=..\assets\icon.ico
 UninstallDisplayIcon={app}\{#AppExe}
 UninstallDisplayName={#AppName}
@@ -50,7 +50,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Type: filesandordirs; Name: "{app}\_internal"
 
 [Files]
-Source: "..\dist\GifLibrary\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\dist\GifShelf\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{autoprograms}\{#AppName}"; Filename: "{app}\{#AppExe}"
@@ -66,7 +66,7 @@ const
 { Same folder as storage.default_app_dir() / settings() in the app. }
 function DataDir(): String;
 begin
-  Result := ExpandConstant('{localappdata}\GifLibrary');
+  Result := ExpandConstant('{localappdata}\GifShelf');
 end;
 
 function IsThumbnail(const Name: String): Boolean;

@@ -4,14 +4,14 @@ from pathlib import Path
 
 from PySide6.QtCore import QCoreApplication, QSettings, QStandardPaths
 
-APP_NAME = "Gif Library"  # shown to users
-APP_ID = "GifLibrary"  # folder/settings name, so no spaces
+APP_NAME = "GifShelf"  # shown to users
+APP_ID = "GifShelf"  # folder/settings name, so no spaces
 DB_NAME = "library.sqlite3"
 THUMB_DIR_NAME = "thumbnails"
 _SETTINGS_KEY = "storage_dir"
 
 # QStandardPaths builds per-user folders from the application name; no
-# organisation name, so it's %LOCALAPPDATA%\GifLibrary rather than <org>\GifLibrary.
+# organisation name, so it's %LOCALAPPDATA%\GifShelf rather than <org>\GifShelf.
 QCoreApplication.setApplicationName(APP_ID)
 
 
@@ -20,8 +20,8 @@ def _standard_dir(location: QStandardPaths.StandardLocation) -> Path:
 
 
 def default_app_dir() -> Path:
-    """Per-user data folder: %LOCALAPPDATA%\\GifLibrary, ~/Library/Application Support/GifLibrary,
-    or ~/.local/share/GifLibrary. Local (not roaming) since thumbnails can get large."""
+    """Per-user data folder: %LOCALAPPDATA%\\GifShelf, ~/Library/Application Support/GifShelf,
+    or ~/.local/share/GifShelf. Local (not roaming) since thumbnails can get large."""
     return _standard_dir(QStandardPaths.StandardLocation.AppLocalDataLocation)
 
 
@@ -88,7 +88,7 @@ def library_dir_for(chosen: Path) -> Path:
     """Where the library goes when the user picks `chosen` in a folder dialog.
 
     An existing library, or an empty/new folder, is used as-is; anything else
-    (a drive root like D:\\, Documents, ...) gets a dedicated GifLibrary
+    (a drive root like D:\\, Documents, ...) gets a dedicated GifShelf
     subfolder, so our files never mix with the user's.
     """
     chosen = chosen.resolve()
