@@ -12,12 +12,6 @@ permissions:
 jobs:
   release:
     runs-on: windows-latest
-    env:
-      # Signing turns on once these are set (Settings > Secrets and variables > Actions):
-      #   variables: SIGNPATH_ORGANIZATION_ID, SIGNPATH_PROJECT_SLUG, SIGNPATH_POLICY_SLUG
-      #   secret:    SIGNPATH_API_TOKEN
-      # The SignPath project needs two artifact configurations: "app" and "installer".
-      SIGNING: ${{ vars.SIGNPATH_ORGANIZATION_ID != '' }}
     steps:
       - uses: actions/checkout@v5
 
@@ -41,67 +35,9 @@ jobs:
       - name: Install Inno Setup
         run: choco install innosetup -y --no-progress
 
-      - name: Build app
+      - name: Build app and installer
         shell: cmd
-        run: build.bat app
-
-      # --- sign the app (skipped until SignPath is configured) ---
-      - name: Upload unsigned app
-        if: env.SIGNING == 'true'
-        id: upload-app
-        uses: actions/upload-artifact@v7
-        with:
-          name: app-unsigned
-          path: dist/GifShelf/
-
-      - name: Sign app
-        if: env.SIGNING == 'true'
-        uses: signpath/github-action-submit-signing-request@v3
-        with:
-          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
-          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
-          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
-          signing-policy-slug: ${{ vars.SIGNPATH_POLICY_SLUG }}
-          artifact-configuration-slug: app
-          github-artifact-id: ${{ steps.upload-app.outputs.artifact-id }}
-          wait-for-completion: true  # waits for your manual approval in SignPath
-          output-artifact-directory: dist/GifShelf-signed
-
-      - name: Use signed app
-        if: env.SIGNING == 'true'
-        shell: bash
-        run: rm -rf dist/GifShelf && mv dist/GifShelf-signed dist/GifShelf
-
-      # --- installer, built from the (signed) app ---
-      - name: Build installer
-        shell: cmd
-        run: build.bat installer
-
-      - name: Upload unsigned installer
-        if: env.SIGNING == 'true'
-        id: upload-installer
-        uses: actions/upload-artifact@v7
-        with:
-          name: installer-unsigned
-          path: dist/GifShelf-*-setup.exe
-
-      - name: Sign installer
-        if: env.SIGNING == 'true'
-        uses: signpath/github-action-submit-signing-request@v3
-        with:
-          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
-          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
-          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
-          signing-policy-slug: ${{ vars.SIGNPATH_POLICY_SLUG }}
-          artifact-configuration-slug: installer
-          github-artifact-id: ${{ steps.upload-installer.outputs.artifact-id }}
-          wait-for-completion: true
-          output-artifact-directory: dist/signed
-
-      - name: Use signed installer
-        if: env.SIGNING == 'true'
-        shell: bash
-        run: mv -f dist/signed/*.exe dist/
+        run: build.bat
 
       - name: Create draft release
         if: startsWith(github.ref, 'refs/tags/')

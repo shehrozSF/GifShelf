@@ -1,7 +1,7 @@
 @echo off
 rem Builds dist\GifShelf\ (the app) and dist\GifShelf-<version>-setup.exe (the installer).
 rem build.bat              both
-rem build.bat app          only the app (CI signs it before building the installer)
+rem build.bat app          only the app
 rem build.bat installer    only the installer, from whatever is in dist\GifShelf\
 rem Needs: .venv and, for the installer, Inno Setup 6
 rem winget install JRSoftware.InnoSetup

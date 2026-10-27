@@ -13,12 +13,10 @@ Save a GIF by URL (or local file), tag it, and copy its link back out with one c
 
 Get the installer from the [latest release](../../releases/latest) and run `GifShelf-<version>-setup.exe`. It installs for your user only, so it doesn't need administrator rights.
 
-Releases are currently not code-signed, so Windows may warn you:
+Windows may warn you about the installer because GifShelf is a new app it doesn't recognise yet:
 
 - **SmartScreen** ("Windows protected your PC"): click *More info*, then *Run anyway*.
-- **Smart App Control** blocks unsigned apps outright, with no option to run them. On those PCs, wait for a signed release or [run from source](#building-from-source).
-
-Code signing is provided by SignPath.io with a certificate by SignPath Foundation (pending approval); see the [code signing policy](#code-signing-policy).
+- **Smart App Control** blocks apps it doesn't recognise, with no option to run them. On those PCs, [run from source](#building-from-source) instead.
 
 ## Where your data is stored
 
@@ -48,20 +46,6 @@ The installer step needs [Inno Setup 6](https://jrsoftware.org/isinfo.php)(`wing
 Releases are built by GitHub Actions (`.github/workflows/release.yml`): bump `__version__` in `app/__init__.py`, then push a matching tag such as `v1.0.1`.
 The workflow builds the installer and creates a draft release to review and
 publish.
-
-## Code signing policy
-
-Free code signing provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/).
-
-> Signing is pending approval by SignPath Foundation; releases are unsigned until then.
-
-Signed releases are built from this repository by GitHub Actions, and each
-release is approved manually before it is signed.
-
-Team roles:
-
-- Committers and reviewers: [shehrozSF](https://github.com/shehrozSF)
-- Approvers: [shehrozSF](https://github.com/shehrozSF)
 
 ## Privacy policy
 

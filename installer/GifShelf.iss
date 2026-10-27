@@ -16,7 +16,7 @@ AppName={#AppName}
 AppVersion={#AppVersion}
 AppVerName={#AppName} {#AppVersion}
 AppCopyright={#AppCopyright}
-; File properties of the setup exe (required for signed releases).
+; File properties of the setup exe.
 VersionInfoVersion={#AppVersion}
 VersionInfoProductName={#AppName}
 VersionInfoDescription={#AppName} Setup
